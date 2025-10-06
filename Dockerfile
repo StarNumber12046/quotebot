@@ -6,7 +6,6 @@ COPY tsconfig.json .
 COPY package.json .
 COPY pnpm-lock.yaml .
 COPY pnpm-workspace.yaml .
-COPY eslint.config.mjs .
 RUN npm install -g pnpm
 RUN pnpm install
 RUN ls
