@@ -9,7 +9,7 @@
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
-import { db } from "../../../../../packages/backend/src";
+import { db } from "@repo/backend/src";
 
 /**
  * 1. CONTEXT

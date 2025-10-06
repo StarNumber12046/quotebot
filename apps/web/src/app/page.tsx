@@ -5,8 +5,6 @@ import { Button } from "~/components/ui/button";
 import Link from "next/link";
 
 export default async function Home() {
-  void api.quote.getMyQuotes.prefetch();
-
   return (
     <HydrateClient>
       <main className="dark flex min-h-screen flex-col bg-black text-white">
