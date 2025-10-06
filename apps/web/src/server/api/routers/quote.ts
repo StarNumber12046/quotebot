@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { auth, clerkClient } from "@clerk/nextjs/server";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import {
   channelsCache,
@@ -9,6 +8,8 @@ import {
 } from "@repo/backend/src/schema";
 import { eq } from "@repo/backend/src/index";
 import { TRPCError } from "@trpc/server";
+import { auth } from "~/auth";
+import { authClient } from "~/lib/auth-client";
 
 export const quotesRouter = createTRPCRouter({
   hello: publicProcedure
@@ -20,27 +21,26 @@ export const quotesRouter = createTRPCRouter({
     }),
 
   getMyQuotes: publicProcedure.query(async ({ ctx }) => {
-    const currentAuth = await auth();
-    console.log("auth", currentAuth);
-    if (!currentAuth)
-      throw new TRPCError({
-        message: "This shouldn't happen :/",
-        code: "UNAUTHORIZED",
-      });
-    const clerk = await clerkClient();
-    const userAccount = await clerk.users.getUser(currentAuth.userId!);
-    const discordAccount = userAccount.externalAccounts?.find(
-      (acc) => acc.provider === "oauth_discord",
-    );
+    const [discordAccount] = await auth.api.listUserAccounts(ctx);
+    console.log("auth", discordAccount);
     if (!discordAccount)
       throw new TRPCError({
         message: "This shouldn't happen :/",
         code: "UNAUTHORIZED",
       });
+    const res = await auth.api.getAccessToken({
+      body: {
+        providerId: "discord",
+      },
+      headers: ctx.headers,
+    });
+    console.log("res", res);
+
+    console.log("discordAccount", discordAccount);
     const userQuotes = await ctx.db
       .select()
       .from(quotes)
-      .where(eq(quotes.userId, discordAccount.externalId));
+      .where(eq(quotes.userId, discordAccount.accountId));
 
     // Add cache details (users, channels, guilds) to the returned data for each quote
     return Promise.all(

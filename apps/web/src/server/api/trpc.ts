@@ -9,7 +9,6 @@
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
-import { auth } from "@clerk/nextjs/server";
 import { db } from "../../../../../packages/backend/src";
 
 /**
@@ -104,21 +103,3 @@ const timingMiddleware = t.middleware(async ({ next, path }) => {
  * are logged in.
  */
 export const publicProcedure = t.procedure.use(timingMiddleware);
-
-const isAuthed = t.middleware(({ next, ctx }) => {
-  // @ts-expect-error idk
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  if (!ctx.auth.userId) {
-    throw new TRPCError({ code: "UNAUTHORIZED" });
-  }
-  return next({
-    ctx: {
-      // @ts-expect-error idk
-      auth: await auth(),
-    },
-  });
-});
-
-export const protectedProcedure = t.procedure
-  .use(timingMiddleware)
-  .use(isAuthed);

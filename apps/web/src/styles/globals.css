@@ -1,11 +1,15 @@
 @import "tailwindcss";
 @import "tw-animate-css";
-
+@import "@daveyplate/better-auth-ui/css";
 @custom-variant dark (&:is(.dark *));
 
 @theme {
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+:root {
+  color-scheme: dark;
 }
 
 @theme inline {

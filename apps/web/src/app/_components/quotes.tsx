@@ -43,11 +43,6 @@ export function Quotes() {
     ).values(),
   );
 
-  // Debug: log users
-  useEffect(() => {
-    console.log("[Quotes] Users:", users);
-  }, [data]);
-
   if (isLoading) {
     console.log("[Quotes] Loading...");
     return <p>Loading...</p>;
@@ -64,7 +59,7 @@ export function Quotes() {
       <h1 className="text-4xl font-bold">Messages you quoted</h1>
 
       {/* User filter */}
-      <Select onValueChange={handleSelect}>
+      <Select onValueChange={handleSelect} defaultValue="null">
         <SelectTrigger>
           <SelectValue placeholder="Filter by user" />
         </SelectTrigger>
@@ -92,7 +87,7 @@ export function Quotes() {
         </SelectContent>
       </Select>
 
-      <div className="flex flex-row flex-wrap gap-8">
+      <div className="flex flex-row flex-wrap justify-center gap-8">
         {filteredData?.map((quote) => (
           <div
             key={quote.id}
