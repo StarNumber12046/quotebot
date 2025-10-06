@@ -5,7 +5,7 @@ export const dynamicParams = false;
 
 export function generateStaticParams() {
   return Object.values(authViewPaths)
-    .filter((path) => path !== "/auth/sign-in")
+    .filter((path) => !path.includes("sign-in"))
     .map((path) => ({ path }));
 }
 
