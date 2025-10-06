@@ -12,7 +12,10 @@ export default async function Home() {
       <main className="dark flex min-h-screen flex-col bg-black text-white">
         <nav className="flex w-full flex-row justify-end p-4">
           <SignedIn>
-            <UserButton className="border border-neutral-950 bg-neutral-900 text-white hover:bg-neutral-950" />
+            <UserButton
+              size={"icon"}
+              className="border border-neutral-950 bg-neutral-900 text-white hover:bg-neutral-950"
+            />
           </SignedIn>
           <SignedOut>
             <Button variant="outline">
