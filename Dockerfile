@@ -7,7 +7,6 @@ COPY pnpm-workspace.yaml .
 COPY apps apps
 COPY packages packages
 COPY turbo.json .
-COPY tsconfig.json .
 COPY start-bot.sh .
 RUN npm install -g pnpm
 RUN pnpm install
