@@ -4,7 +4,9 @@ import { authViewPaths } from "@daveyplate/better-auth-ui/server";
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return Object.values(authViewPaths).map((path) => ({ path }));
+  return Object.values(authViewPaths)
+    .filter((path) => path !== "/auth/sign-in")
+    .map((path) => ({ path }));
 }
 
 export default async function AuthPage({
