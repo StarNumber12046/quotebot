@@ -11,6 +11,8 @@ COPY start-bot.sh .
 RUN npm install -g pnpm
 RUN pnpm install
 RUN ls
-RUN pnpm build
+RUN cd packages/backend && pnpm build
+RUN ../..
+RUN cd apps/bot && pnpm build
 #ENTRYPOINT ["/bin/bash"]
 ENTRYPOINT ["bash", "start-bot.sh"]
