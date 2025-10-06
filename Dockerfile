@@ -12,7 +12,7 @@ RUN npm install -g pnpm
 RUN pnpm install
 RUN ls
 RUN cd packages/backend && pnpm build
-RUN ../..
+RUN cd ../..
 RUN cd apps/bot && pnpm build
 #ENTRYPOINT ["/bin/bash"]
 ENTRYPOINT ["bash", "start-bot.sh"]
