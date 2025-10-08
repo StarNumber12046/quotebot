@@ -9,11 +9,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
+import { useRouter } from "next/navigation";
 
 export function Quotes() {
   const [filter, setFilter] = useState<string | null>(null);
   const { data = [], isLoading } = api.quote.getMyQuotes.useQuery();
-
+  const trpc = api.useUtils();
+  const deleteQuotesMutation = api.quote.deleteQuote.useMutation({
+    onSuccess: () => {
+      console.log("DONE!");
+      void trpc.quote.getMyQuotes.invalidate();
+    },
+  });
   // Debug: log raw data
   useEffect(() => {
     console.log("[Quotes] Raw data:", data);
@@ -79,7 +86,6 @@ export function Quotes() {
                       height={20}
                       className="rounded-full"
                     />
-                    <p>{user.username}</p>
                   </div>
                 </SelectItem>
               ),
@@ -99,6 +105,14 @@ export function Quotes() {
               width={400}
               height={200}
             />
+            <p
+              className="hover:cursor-pointer"
+              onClick={() => {
+                deleteQuotesMutation.mutate({ quoteId: quote.id });
+              }}
+            >
+              Delete quote
+            </p>
           </div>
         ))}
       </div>
