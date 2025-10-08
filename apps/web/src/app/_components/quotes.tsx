@@ -9,7 +9,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import { useRouter } from "next/navigation";
 
 export function Quotes() {
   const [filter, setFilter] = useState<string | null>(null);
@@ -43,11 +42,7 @@ export function Quotes() {
 
   // get all users from data, remove duplicates
   const users = Array.from(
-    new Map(
-      data
-        .filter((quote) => quote.author)
-        .map((quote) => [quote.author?.userId, quote.author]),
-    ).values(),
+    new Map(data.map((quote) => [quote.authorId, quote.author])).values(),
   );
 
   if (isLoading) {

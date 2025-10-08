@@ -53,21 +53,6 @@ export const quotesRouter = createTRPCRouter({
             .from(usersCache)
             .where(eq(usersCache.userId, quote.authorId))
         )[0],
-        channel: (
-          await ctx.db
-            .select()
-            .from(channelsCache)
-            .where(eq(channelsCache.channelId, quote.channelId))
-        )[0],
-
-        guild: quote.guildId
-          ? (
-              await ctx.db
-                .select()
-                .from(guildsCache)
-                .where(eq(guildsCache.guildId, quote.guildId))
-            )[0]
-          : null,
       })),
     );
   }),
