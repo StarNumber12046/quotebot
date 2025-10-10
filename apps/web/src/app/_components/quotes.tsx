@@ -81,6 +81,7 @@ export function Quotes() {
                       height={20}
                       className="rounded-full"
                     />
+                    {user.username}
                   </div>
                 </SelectItem>
               ),
