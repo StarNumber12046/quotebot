@@ -1,5 +1,6 @@
 import {
 	ApplicationCommandType,
+	cleanContent,
 	InteractionContextType,
 	Message,
 	MessageContextMenuCommandInteraction,
@@ -98,6 +99,29 @@ async function cacheMessage(message: Message) {
 	}
 }
 
+function manuallyCleanContent(text: string, message: Message) {
+	if (!message.mentions.users.size) {
+		return text; // No users to clean
+	}
+
+	let cleanedText = text;
+
+	// Replace user mentions
+	for (const [id, user] of message.mentions.users) {
+		// The regex looks for <@id> or <@!id> (non-nickname vs nickname)
+		const mentionRegex = new RegExp(`<@!?${id}>`, 'g');
+
+		// Replace the tag with the user's display name, prepended with '@'
+		// Using 'username' or 'displayName' is often better than 'tag' (which is 'user#discriminator')
+		cleanedText = cleanedText.replace(mentionRegex, `@${user.displayName || user.username}`);
+	}
+
+	// You might also need to do this for roles (<@&roleId>) and channels (<#channelId>)
+	// if you notice those are also failing.
+
+	return cleanedText;
+}
+
 export default {
 	data: {
 		name: 'Quote this',
@@ -106,7 +130,9 @@ export default {
 	},
 	async execute(interaction: MessageContextMenuCommandInteraction) {
 		await interaction.deferReply();
-		const { author, content, id: targetId } = interaction.targetMessage;
+		const { author, content: originalContent, id: targetId } = interaction.targetMessage;
+		const content = manuallyCleanContent(originalContent, interaction.targetMessage);
+		console.log(`[DEBUG] Quote content: ${content}`);
 		console.log(interaction.targetMessage);
 		const quote = (await fetch('https://api.voids.top/quote', {
 			method: 'POST',
