@@ -17,31 +17,6 @@ export default async function Home() {
   return (
     <HydrateClient>
       <main className="dark flex min-h-screen flex-col items-center bg-black text-white">
-        <nav className="flex w-full flex-row justify-end p-4">
-          <SignedIn>
-            <UserButton
-              size={"icon"}
-              className="border border-neutral-950 bg-neutral-900 text-white hover:bg-neutral-950"
-            />
-          </SignedIn>
-          <SignedOut>
-            <Button variant="outline">
-              <Link href="/auth/sign-in">Sign In</Link>
-            </Button>
-            <ArrowThing
-              width="100px"
-              height="100px"
-              fill="#ffffff"
-              style={{
-                transform: "scaleY(-1) rotate(290deg)",
-                scale: -1,
-                position: "absolute",
-                right: "60px",
-                top: "50px",
-              }}
-            />
-          </SignedOut>
-        </nav>
         <SignedIn>
           <Quotes />
         </SignedIn>
