@@ -9,6 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
+import Link from "next/link";
 
 export function Quotes() {
   const [filter, setFilter] = useState<string | null>(null);
@@ -34,12 +35,14 @@ export function Quotes() {
             key={quote.id}
             className="flex flex-col items-center gap-2 rounded border-2 border-neutral-900 p-2"
           >
-            <Image
-              src={quote.imageStorageUrl}
-              alt={quote.quote}
-              width={400}
-              height={200}
-            />
+            <Link href={quote.imageStorageUrl}>
+              <Image
+                src={quote.imageStorageUrl}
+                alt={quote.quote}
+                width={400}
+                height={200}
+              />
+            </Link>
           </div>
         ))}
       </div>
