@@ -2,6 +2,7 @@
 // https://orm.drizzle.team/docs/sql-schema-declaration
 
 import { sql } from "drizzle-orm";
+import { pgEnum } from "drizzle-orm/pg-core";
 import { index, pgTableCreator } from "drizzle-orm/pg-core";
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
@@ -11,75 +12,64 @@ import { index, pgTableCreator } from "drizzle-orm/pg-core";
  */
 export const createTable = pgTableCreator((name) => `web_${name}`);
 export * from "drizzle-orm";
-export const quotes = createTable(
-  "quote",
-  (d) => ({
-    id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
-    quote: d.text().notNull(),
 
-    guildId: d.text(),
-    channelId: d.text().notNull(),
-    messageId: d.text().notNull(),
+export const visibilityEnum = pgEnum("visibility", ["PUBLIC", "PRIVATE"]);
 
-    authorId: d.text().notNull(),
+export const quotes = createTable("quote", (d) => ({
+  id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
+  quote: d.text().notNull(),
 
-    imageStorageUrl: d.text().notNull(),
+  guildId: d.text(),
+  channelId: d.text().notNull(),
+  messageId: d.text().notNull(),
 
-    userId: d.text().notNull(),
-    createdAt: d
-      .timestamp({ withTimezone: true })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
-  }),
-  (t) => [index("name_idx").on(t.authorId)]
-);
+  authorId: d.text().notNull(),
 
-export const usersCache = createTable(
-  "users_cache",
-  (d) => ({
-    id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
-    userId: d.text().notNull(),
-    username: d.text().notNull(),
-    name: d.text().notNull(),
-    avatarUrl: d.text().notNull(),
-    createdAt: d
-      .timestamp({ withTimezone: true })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
-  }),
-  (t) => [index("users_userId_idx").on(t.userId)]
-);
+  imageStorageUrl: d.text().notNull(),
 
-export const guildsCache = createTable(
-  "guilds_cache",
-  (d) => ({
-    id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
-    guildId: d.text().notNull(),
-    image: d.text().notNull(),
-    name: d.text().notNull(),
-    createdAt: d
-      .timestamp({ withTimezone: true })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
-  }),
-  (t) => [index("guilds_guildId_idx").on(t.guildId)]
-);
+  visibility: visibilityEnum().default("PRIVATE").notNull(),
 
-export const channelsCache = createTable(
-  "channels_cache",
-  (d) => ({
-    id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
-    channelId: d.text().notNull(),
-    guildId: d.text().notNull(),
-    name: d.text().notNull(),
-    createdAt: d
-      .timestamp({ withTimezone: true })
-      .default(sql`CURRENT_TIMESTAMP`)
-      .notNull(),
-    updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
-  }),
-  (t) => [index("channels_channelId_idx").on(t.channelId)]
-);
+  userId: d.text().notNull(),
+  createdAt: d
+    .timestamp({ withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
+}));
+
+export const usersCache = createTable("users_cache", (d) => ({
+  id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
+  userId: d.text().notNull(),
+  username: d.text().notNull(),
+  name: d.text().notNull(),
+  avatarUrl: d.text().notNull(),
+  createdAt: d
+    .timestamp({ withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
+}));
+
+export const guildsCache = createTable("guilds_cache", (d) => ({
+  id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
+  guildId: d.text().notNull(),
+  image: d.text().notNull(),
+  name: d.text().notNull(),
+  createdAt: d
+    .timestamp({ withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
+}));
+
+export const channelsCache = createTable("channels_cache", (d) => ({
+  id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
+  channelId: d.text().notNull(),
+  guildId: d.text().notNull(),
+  name: d.text().notNull(),
+  createdAt: d
+    .timestamp({ withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
+}));

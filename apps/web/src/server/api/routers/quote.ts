@@ -2,8 +2,10 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import {
   channelsCache,
+  desc,
   guildsCache,
   quotes,
+  sql,
   usersCache,
 } from "@repo/backend/src/schema";
 import { eq } from "@repo/backend/src/index";
@@ -40,6 +42,7 @@ export const quotesRouter = createTRPCRouter({
     const userQuotes = await ctx.db
       .select()
       .from(quotes)
+      .orderBy(desc(quotes.createdAt))
       .where(eq(quotes.authorId, discordAccount.accountId));
 
     // Add cache details (users, channels, guilds) to the returned data for each quote
@@ -76,6 +79,7 @@ export const quotesRouter = createTRPCRouter({
     const userQuotes = await ctx.db
       .select()
       .from(quotes)
+      .orderBy(desc(quotes.createdAt))
       .where(eq(quotes.userId, discordAccount.accountId));
 
     // Add cache details (users, channels, guilds) to the returned data for each quote
@@ -91,6 +95,54 @@ export const quotesRouter = createTRPCRouter({
       })),
     );
   }),
+
+  getPublicQuotes: publicProcedure.query(async ({ ctx }) => {
+    const publicQuotes = await ctx.db
+      .select()
+      .from(quotes)
+      .orderBy(sql`RANDOM()`)
+      .limit(50)
+      .where(eq(quotes.visibility, "PUBLIC"));
+
+    // Add cache details (users, channels, guilds) to the returned data for each quote
+    return Promise.all(
+      publicQuotes.map(async (quote) => ({
+        ...quote,
+        author: (
+          await ctx.db
+            .select()
+            .from(usersCache)
+            .where(eq(usersCache.userId, quote.authorId))
+        )[0],
+      })),
+    );
+  }),
+
+  setQuoteVisibility: publicProcedure
+    .input(
+      z.object({
+        quoteId: z.number(),
+        visibility: z.enum(["PUBLIC", "PRIVATE"]),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { quoteId, visibility } = input;
+
+      const [discordAccount] = await auth.api.listUserAccounts(ctx);
+      if (!discordAccount) throw new TRPCError({ code: "UNAUTHORIZED" });
+      const quote = await ctx.db
+        .select()
+        .from(quotes)
+        .where(eq(quotes.id, quoteId));
+      if (!quote || quote.length === 0)
+        throw new TRPCError({ code: "NOT_FOUND" });
+      if (quote[0]?.userId !== discordAccount.accountId)
+        throw new TRPCError({ code: "UNAUTHORIZED" });
+      await ctx.db
+        .update(quotes)
+        .set({ visibility })
+        .where(eq(quotes.id, quoteId));
+    }),
 
   deleteQuote: publicProcedure
     .input(z.object({ quoteId: z.number() }))
