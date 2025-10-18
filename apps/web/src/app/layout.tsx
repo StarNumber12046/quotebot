@@ -35,7 +35,7 @@ export default function RootLayout({
               </div>
               <div className="flex flex-row items-center gap-4">
                 <SignedIn>
-                  <Link href="/quoted">Your quotes</Link>
+                  <Link href="/">Your quotes</Link>
                   <Link href="/quoted">Quotes about you</Link>
                   <UserButton
                     size={"icon"}
