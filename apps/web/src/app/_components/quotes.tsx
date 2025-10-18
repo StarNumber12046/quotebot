@@ -10,6 +10,7 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import Link from "next/link";
+import { Quote } from "~/components/quote";
 
 export function Quotes() {
   const [filter, setFilter] = useState<string | null>(null);
@@ -98,39 +99,13 @@ export function Quotes() {
 
       <div className="flex flex-row flex-wrap justify-center gap-8">
         {filteredData?.map((quote) => (
-          <div
+          <Quote
             key={quote.id}
-            className="flex flex-col items-center gap-2 rounded border-2 border-neutral-900 p-2"
-          >
-            <Link href={quote.imageStorageUrl}>
-              <Image
-                src={quote.imageStorageUrl}
-                alt={quote.quote}
-                width={400}
-                height={200}
-              />
-            </Link>
-            <p
-              className="hover:cursor-pointer"
-              onClick={() => {
-                deleteQuotesMutation.mutate({ quoteId: quote.id });
-              }}
-            >
-              Delete quote
-            </p>
-            <p
-              className="hover:cursor-pointer"
-              onClick={() =>
-                updateVisibilityMutation.mutate({
-                  quoteId: quote.id,
-                  visibility:
-                    quote.visibility === "PUBLIC" ? "PRIVATE" : "PUBLIC",
-                })
-              }
-            >
-              Make {quote.visibility === "PUBLIC" ? "private" : "public"}
-            </p>
-          </div>
+            quote={quote}
+            canDelete={true}
+            canChangeVisibility={true}
+            canCopy={true}
+          />
         ))}
       </div>
     </div>
