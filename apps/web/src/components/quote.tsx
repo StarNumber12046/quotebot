@@ -1,11 +1,12 @@
 import Link from "next/link";
 import Image from "next/image";
 import { api } from "~/trpc/react";
-import { LockOpen, Lock, Trash } from "lucide-react";
+import { LockOpen, Lock, Trash, Copy } from "lucide-react";
 export function Quote({
   quote,
   canDelete,
   canChangeVisibility,
+  canCopy,
 }: {
   quote: {
     imageStorageUrl: string;
@@ -32,6 +33,10 @@ export function Quote({
     },
   });
 
+  function copyCommandToClipboard(quoteId: number) {
+    void navigator.clipboard.writeText("/getquote id:" + quoteId);
+  }
+
   return (
     <div
       key={quote.id}
@@ -47,6 +52,14 @@ export function Quote({
           />
         </Link>
         <div className="absolute top-2 right-2 hidden flex-row items-center justify-end gap-2 group-hover:flex">
+          {canCopy && (
+            <button
+              className="rounded bg-black/80 p-1.5 hover:cursor-pointer hover:bg-black"
+              onClick={() => copyCommandToClipboard(quote.id)}
+            >
+              <Copy size={20} />
+            </button>
+          )}
           {canChangeVisibility && (
             <button
               className={
