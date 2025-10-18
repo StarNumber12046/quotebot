@@ -1,9 +1,6 @@
 import { HydrateClient } from "~/trpc/server";
 import { Quotes } from "./_components/quotes";
-import { UserButton, SignedIn, SignedOut } from "@daveyplate/better-auth-ui";
-import { Button } from "~/components/ui/button";
-import Link from "next/link";
-import type { SVGProps } from "react";
+import { SignedIn, SignedOut } from "@daveyplate/better-auth-ui";
 
 export default async function Home() {
   return (

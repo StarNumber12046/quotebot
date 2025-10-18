@@ -1,18 +1,9 @@
 import { z } from "zod";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
-import {
-  channelsCache,
-  desc,
-  guildsCache,
-  quotes,
-  sql,
-  usersCache,
-} from "@repo/backend/src/schema";
+import { desc, quotes, sql, usersCache } from "@repo/backend/src/schema";
 import { eq } from "@repo/backend/src/index";
 import { TRPCError } from "@trpc/server";
 import { auth } from "~/auth";
-import { authClient } from "~/lib/auth-client";
-import { useMutation } from "@tanstack/react-query";
 
 export const quotesRouter = createTRPCRouter({
   hello: publicProcedure

@@ -3,7 +3,7 @@
 
 import { sql } from "drizzle-orm";
 import { pgEnum } from "drizzle-orm/pg-core";
-import { index, pgTableCreator } from "drizzle-orm/pg-core";
+import { pgTableCreator } from "drizzle-orm/pg-core";
 /**
  * This is an example of how to use the multi-project schema feature of Drizzle ORM. Use the same
  * database instance for multiple projects.

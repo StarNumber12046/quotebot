@@ -8,7 +8,6 @@ import { AuthUiProvider } from "./providers";
 import { SignedIn, UserButton, SignedOut } from "@daveyplate/better-auth-ui";
 import Link from "next/link";
 import { Button } from "~/components/ui/button";
-import type { SVGProps } from "react";
 
 export const metadata: Metadata = {
   title: "Create T3 App",

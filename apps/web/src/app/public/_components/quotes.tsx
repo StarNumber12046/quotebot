@@ -1,14 +1,7 @@
 "use client";
 import { api } from "~/trpc/react";
 import Image from "next/image";
-import { useState, useEffect } from "react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select";
+import { useEffect } from "react";
 import Link from "next/link";
 
 export function Quotes() {
