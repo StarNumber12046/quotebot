@@ -15,6 +15,12 @@ export function Quotes() {
   const [filter, setFilter] = useState<string | null>(null);
   const { data = [], isLoading } = api.quote.getMyQuotes.useQuery();
   const trpc = api.useUtils();
+  const updateVisibilityMutation = api.quote.setQuoteVisibility.useMutation({
+    onSuccess: () => {
+      console.log("DONE!");
+      void trpc.quote.getMyQuotes.invalidate();
+    },
+  });
   const deleteQuotesMutation = api.quote.deleteQuote.useMutation({
     onSuccess: () => {
       console.log("DONE!");
@@ -111,6 +117,18 @@ export function Quotes() {
               }}
             >
               Delete quote
+            </p>
+            <p
+              className="hover:cursor-pointer"
+              onClick={() =>
+                updateVisibilityMutation.mutate({
+                  quoteId: quote.id,
+                  visibility:
+                    quote.visibility === "PUBLIC" ? "PRIVATE" : "PUBLIC",
+                })
+              }
+            >
+              Make {quote.visibility === "PUBLIC" ? "private" : "public"}
             </p>
           </div>
         ))}

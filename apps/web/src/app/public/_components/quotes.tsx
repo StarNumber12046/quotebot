@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 
 export function Quotes() {
-  const { data = [], isLoading } = api.quote.getQuotesAboutMe.useQuery();
+  const { data = [], isLoading } = api.quote.getPublicQuotes.useQuery();
 
   // Debug: log raw data
   useEffect(() => {
@@ -19,7 +19,7 @@ export function Quotes() {
 
   return (
     <div className="dark flex flex-col items-center justify-center gap-2">
-      <h1 className="text-4xl font-bold">Quotes about you</h1>
+      <h1 className="text-4xl font-bold">Random public quotes</h1>
 
       <div className="flex flex-row flex-wrap justify-center gap-8">
         {data?.map((quote) => (
