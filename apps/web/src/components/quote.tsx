@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { api } from "~/trpc/react";
 import { LockOpen, Lock, Trash, Copy } from "lucide-react";
+import posthog from "posthog-js";
 export function Quote({
   quote,
   canDelete,
@@ -35,6 +36,9 @@ export function Quote({
 
   function copyCommandToClipboard(quoteId: number) {
     void navigator.clipboard.writeText("/getquote id:" + quoteId);
+    posthog.capture("quote-copy-command", {
+      quoteId,
+    });
   }
 
   return (
@@ -68,13 +72,18 @@ export function Quote({
                   ? "text-green-500"
                   : "text-red-500")
               }
-              onClick={() =>
+              onClick={() => {
                 updateVisibilityMutation.mutate({
                   quoteId: quote.id,
                   visibility:
                     quote.visibility === "PUBLIC" ? "PRIVATE" : "PUBLIC",
-                })
-              }
+                });
+                posthog.capture("update-visibility", {
+                  quoteId: quote.id,
+                  visibility:
+                    quote.visibility === "PUBLIC" ? "PRIVATE" : "PUBLIC",
+                });
+              }}
             >
               {quote.visibility === "PRIVATE" ? <Lock /> : <LockOpen />}
             </button>
@@ -82,7 +91,12 @@ export function Quote({
           {canDelete && (
             <button
               className="rounded bg-black/80 p-1.5 text-red-500 hover:cursor-pointer hover:bg-black"
-              onClick={() => deleteQuotesMutation.mutate({ quoteId: quote.id })}
+              onClick={() => {
+                deleteQuotesMutation.mutate({ quoteId: quote.id });
+                posthog.capture("delete-quote", {
+                  quoteId: quote.id,
+                });
+              }}
             >
               <Trash size={20} />
             </button>
