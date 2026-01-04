@@ -43,7 +43,8 @@ export default {
 		}
 		if (
 			quote.visibility === 'PRIVATE' &&
-			(quote.userId !== interaction.user.id || quote.authorId !== interaction.user.id)
+			quote.userId !== interaction.user.id &&
+			quote.authorId !== interaction.user.id
 		) {
 			await interaction.followUp({
 				content: 'You do not have permission to view this quote',

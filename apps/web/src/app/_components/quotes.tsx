@@ -15,19 +15,6 @@ import { Quote } from "~/components/quote";
 export function Quotes() {
   const [filter, setFilter] = useState<string | null>(null);
   const { data = [], isLoading } = api.quote.getMyQuotes.useQuery();
-  const trpc = api.useUtils();
-  const updateVisibilityMutation = api.quote.setQuoteVisibility.useMutation({
-    onSuccess: () => {
-      console.log("DONE!");
-      void trpc.quote.getMyQuotes.invalidate();
-    },
-  });
-  const deleteQuotesMutation = api.quote.deleteQuote.useMutation({
-    onSuccess: () => {
-      console.log("DONE!");
-      void trpc.quote.getMyQuotes.invalidate();
-    },
-  });
   // Debug: log raw data
   useEffect(() => {
     console.log("[Quotes] Raw data:", data);
@@ -36,17 +23,8 @@ export function Quotes() {
   // Filter the data
   const filteredData = data.filter((quote) => {
     if (!filter) return true;
-    console.log("[Quotes] Quote:", quote);
-    console.log("[Quotes] Filtering by userId:", filter);
-    console.log("[Quotes] Quote author userId:", quote.userId);
     return quote.authorId === filter;
   });
-
-  // Debug: log filtered data
-  useEffect(() => {
-    console.log("[Quotes] Filter:", filter);
-    console.log("[Quotes] Filtered data:", filteredData);
-  }, [filter, filteredData]);
 
   // get all users from data, remove duplicates
   const users = Array.from(

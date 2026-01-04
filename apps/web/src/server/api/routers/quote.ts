@@ -34,18 +34,14 @@ export const quotesRouter = createTRPCRouter({
       .select()
       .from(quotes)
       .orderBy(desc(quotes.createdAt))
+      .innerJoin(usersCache, eq(quotes.authorId, usersCache.userId))
       .where(eq(quotes.authorId, discordAccount.accountId));
 
     // Add cache details (users, channels, guilds) to the returned data for each quote
     return Promise.all(
-      userQuotes.map(async (quote) => ({
+      userQuotes.map(async ({ quote, users_cache: author }) => ({
         ...quote,
-        author: (
-          await ctx.db
-            .select()
-            .from(usersCache)
-            .where(eq(usersCache.userId, quote.authorId))
-        )[0],
+        author,
       })),
     );
   }),
@@ -70,19 +66,17 @@ export const quotesRouter = createTRPCRouter({
     const userQuotes = await ctx.db
       .select()
       .from(quotes)
-      .orderBy(desc(quotes.createdAt))
-      .where(eq(quotes.userId, discordAccount.accountId));
+      .innerJoin(usersCache, eq(quotes.authorId, usersCache.userId))
+      // Filter quotes to only include those belonging to the current user
+      .where(eq(quotes.userId, discordAccount.accountId))
+      // Order the results by creation date, descending
+      .orderBy(desc(quotes.createdAt));
 
     // Add cache details (users, channels, guilds) to the returned data for each quote
     return Promise.all(
-      userQuotes.map(async (quote) => ({
+      userQuotes.map(async ({ quote, users_cache: author }) => ({
         ...quote,
-        author: (
-          await ctx.db
-            .select()
-            .from(usersCache)
-            .where(eq(usersCache.userId, quote.authorId))
-        )[0],
+        author,
       })),
     );
   }),
@@ -93,18 +87,14 @@ export const quotesRouter = createTRPCRouter({
       .from(quotes)
       .orderBy(sql`RANDOM()`)
       .limit(50)
+      .innerJoin(usersCache, eq(quotes.authorId, usersCache.userId))
       .where(eq(quotes.visibility, "PUBLIC"));
 
     // Add cache details (users, channels, guilds) to the returned data for each quote
     return Promise.all(
-      publicQuotes.map(async (quote) => ({
+      publicQuotes.map(async ({ quote, users_cache: author }) => ({
         ...quote,
-        author: (
-          await ctx.db
-            .select()
-            .from(usersCache)
-            .where(eq(usersCache.userId, quote.authorId))
-        )[0],
+        author,
       })),
     );
   }),
