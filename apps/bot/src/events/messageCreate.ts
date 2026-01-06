@@ -26,13 +26,14 @@ async function executeCommand(message: Message) {
 export default {
 	execute: async (message) => {
 		if (message.author.bot) return;
-		if (!message.reference && !message.content.startsWith('!')) return;
 		if (message.content.startsWith('!')) return await executeCommand(message);
 		if (
 			!message.content.includes(`<@!${message.client.user.id}>`) &&
 			!message.content.includes(`<@${message.client.user.id}>`)
 		)
 			return;
+		if (!message.reference)
+			return void (await message.reply('Please reply to a message to quote or use /help for more information.'));
 		const refMessage = await message.fetchReference();
 		const { author, content: originalContent, id: targetId } = refMessage;
 		const content = manuallyCleanContent(originalContent, refMessage);
