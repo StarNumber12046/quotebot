@@ -1,13 +1,33 @@
-import { Events } from 'discord.js';
+import { Events, Message } from 'discord.js';
 import { Event } from './index.js';
 import { cacheMessage, manuallyCleanContent } from '../util.js';
-import { db } from '@repo/backend/dist/src/index.js';
+import { db, eq } from '@repo/backend/dist/src/index.js';
 import { quotes } from '@repo/backend/dist/src/schema.js';
 import { put } from '@vercel/blob';
+
+async function executeCommand(message: Message) {
+	const command = message.content.split(' ')[0].slice(1);
+	if (!command) return;
+	switch (command) {
+		case 'getquote':
+			const quoteId = message.content.split(' ')[1];
+			if (!quoteId) return;
+			const [quote] = await db
+				.select()
+				.from(quotes)
+				.where(eq(quotes.id, parseInt(quoteId)))
+				.execute();
+			if (!quote) return;
+			message.reply({ files: [quote.imageStorageUrl] });
+			break;
+	}
+}
+
 export default {
 	execute: async (message) => {
 		if (message.author.bot) return;
-		if (!message.reference) return;
+		if (!message.reference && !message.content.startsWith('!')) return;
+		if (message.content.startsWith('!')) return await executeCommand(message);
 		if (
 			!message.content.includes(`<@!${message.client.user.id}>`) &&
 			!message.content.includes(`<@${message.client.user.id}>`)
