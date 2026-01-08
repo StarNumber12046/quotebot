@@ -53,7 +53,7 @@ async function cacheMessage(message: Message) {
 				console.log(`[DEBUG] 🏰 Inserting new guild cache for ${guild.name}`);
 				await db.insert(guildsCache).values({
 					guildId,
-					image: guild.iconURL({ extension: 'png', size: 4096 })!,
+					image: guild.iconURL({ extension: 'png', size: 4096 })! || 'https://cdn.discordapp.com/embed/avatars/0.png',
 					name: guild.name,
 				});
 			} else {
@@ -78,7 +78,8 @@ async function cacheMessage(message: Message) {
 				userId: author.id,
 				username: author.username,
 				name: author.username,
-				avatarUrl: author.avatarURL({ extension: 'png', size: 4096 })!,
+				avatarUrl:
+					author.avatarURL({ extension: 'png', size: 4096 })! || 'https://cdn.discordapp.com/embed/avatars/0.png',
 			});
 		} else {
 			console.log(`[DEBUG] 🔁 Updating existing user cache for ${author.username}`);
@@ -87,7 +88,8 @@ async function cacheMessage(message: Message) {
 				.set({
 					name: author.username,
 					username: author.username,
-					avatarUrl: author.avatarURL({ extension: 'png', size: 4096 })!,
+					avatarUrl:
+						author.avatarURL({ extension: 'png', size: 4096 })! || 'https://cdn.discordapp.com/embed/avatars/0.png',
 					updatedAt: new Date(),
 				})
 				.where(eq(usersCache.userId, author.id));
@@ -140,7 +142,7 @@ export default {
 				text: content,
 				display_name: author.displayName,
 				username: author.username + (author.discriminator ? '#' + author.discriminator : ''),
-				avatar: author.avatarURL({ extension: 'png', size: 4096 })!,
+				avatar: author.avatarURL({ extension: 'png', size: 4096 }) || 'https://cdn.discordapp.com/embed/avatars/0.png',
 				color: false,
 			}),
 		}).then((res) => res.json())) as { success: boolean; url: string };

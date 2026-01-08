@@ -44,7 +44,7 @@ export default {
 				text: content,
 				display_name: author.displayName,
 				username: author.username + (author.discriminator ? '#' + author.discriminator : ''),
-				avatar: author.avatarURL({ extension: 'png', size: 4096 })!,
+				avatar: author.avatarURL({ extension: 'png', size: 4096 })! || 'https://cdn.discordapp.com/embed/avatars/0.png',
 				color: false,
 			}),
 		}).then((res) => res.json())) as { success: boolean; url: string };
