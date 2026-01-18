@@ -11,7 +11,7 @@ export function FakeQuoteToggle() {
   });
 
   return (
-    <div className="my-4 ml-72 flex w-full max-w-md items-center gap-4 rounded-md border p-4">
+    <div className="my-4 flex w-full max-w-md items-center gap-4 rounded-md border p-4 md:ml-72">
       <span className="flex-1">
         Allow people to create Fake Quotes about you?
       </span>
