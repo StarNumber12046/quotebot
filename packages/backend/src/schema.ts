@@ -29,7 +29,19 @@ export const quotes = createTable("quote", (d) => ({
 
   visibility: visibilityEnum().default("PRIVATE").notNull(),
 
+  isFake: d.boolean().default(false).notNull(),
+
   userId: d.text().notNull(),
+  createdAt: d
+    .timestamp({ withTimezone: true })
+    .default(sql`CURRENT_TIMESTAMP`)
+    .notNull(),
+  updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
+}));
+
+export const userConfigs = createTable("user_config", (d) => ({
+  userId: d.text().primaryKey().notNull(),
+  fakeQuoteAllowed: d.boolean().default(true).notNull(),
   createdAt: d
     .timestamp({ withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)

@@ -12,7 +12,6 @@ export function Quotes() {
   }, [data]);
 
   if (isLoading) {
-    console.log("[Quotes] Loading...");
     return <p>Loading...</p>;
   }
 

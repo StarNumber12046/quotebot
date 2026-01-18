@@ -52,6 +52,7 @@ export default {
 			});
 			return;
 		}
-		await interaction.followUp({ files: [quote.imageStorageUrl] });
+		const content = quote.isFake ? 'This is a fake quote.' : undefined;
+		await interaction.followUp({ content, files: [quote.imageStorageUrl] });
 	},
 } satisfies Command;
