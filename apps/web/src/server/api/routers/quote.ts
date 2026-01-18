@@ -159,9 +159,9 @@ export const quotesRouter = createTRPCRouter({
     } else {
       await ctx.db.insert(userConfigs).values({
         userId: discordAccount.accountId,
-        fakeQuoteAllowed: true,
+        fakeQuoteAllowed: false,
       });
-      return true;
+      return false;
     }
   }),
 
