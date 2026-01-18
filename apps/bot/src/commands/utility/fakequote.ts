@@ -41,16 +41,25 @@ export default {
 		}
 
 		// Generate Quote
-		const quote = (await fetch('https://api.voids.top/quote', {
-			method: 'POST',
-			body: JSON.stringify({
-				text: text,
-				display_name: user.displayName,
-				username: user.username + (user.discriminator && user.discriminator !== '0' ? '#' + user.discriminator : ''),
-				avatar: user.avatarURL({ extension: 'png', size: 4096 }) || 'https://cdn.discordapp.com/embed/avatars/0.png',
-				color: false,
-			}),
-		}).then((res) => res.json())) as { success: boolean; url: string };
+		let quote: { success: boolean; url: string };
+		try {
+			const res = await fetch('https://api.voids.top/quote', {
+				method: 'POST',
+				headers: { 'content-type': 'application/json' },
+				body: JSON.stringify({
+					text: text,
+					display_name: user.displayName,
+					username: user.username + (user.discriminator && user.discriminator !== '0' ? '#' + user.discriminator : ''),
+					avatar: user.avatarURL({ extension: 'png', size: 4096 }) || 'https://cdn.discordapp.com/embed/avatars/0.png',
+					color: false,
+				}),
+			});
+			if (!res.ok) throw new Error(`Quote API ${res.status}`);
+			quote = (await res.json()) as { success: boolean; url: string };
+		} catch {
+			await interaction.followUp({ content: 'Failed to generate quote.', ephemeral: true });
+			return;
+		}
 
 		if (!quote.success) {
 			await interaction.followUp({
@@ -60,11 +69,19 @@ export default {
 			return;
 		}
 
-		const image = await fetch(quote.url).then((res) => res.blob());
-		const blobRes = await put('fakequote_' + user.id + '_' + Date.now() + '.png', image, {
-			access: 'public',
-			addRandomSuffix: true,
-		});
+		let blobRes;
+		try {
+			const imageRes = await fetch(quote.url);
+			if (!imageRes.ok) throw new Error(`Image fetch ${imageRes.status}`);
+			const image = await imageRes.blob();
+			blobRes = await put('fakequote_' + user.id + '_' + Date.now() + '.png', image, {
+				access: 'public',
+				addRandomSuffix: true,
+			});
+		} catch {
+			await interaction.followUp({ content: 'Failed to generate quote image.', ephemeral: true });
+			return;
+		}
 
 		await db.insert(quotes).values({
 			quote: text,
