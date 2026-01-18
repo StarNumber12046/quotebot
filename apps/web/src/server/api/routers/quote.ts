@@ -7,8 +7,7 @@ import {
   usersCache,
   userConfigs,
 } from "@repo/backend/src/schema";
-import { eq } from "@repo/backend/src/index";
-import { and } from "drizzle-orm";
+import { eq, and } from "@repo/backend/src/index";
 import { TRPCError } from "@trpc/server";
 import { auth } from "~/auth";
 

@@ -1,6 +1,6 @@
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-import { eq } from "drizzle-orm";
+import { eq, and, or } from "drizzle-orm";
 import * as schema from "./schema";
 
 /**
@@ -15,4 +15,4 @@ const conn = globalForDb.conn ?? postgres(process.env.DATABASE_URL!);
 if (process.env.NODE_ENV !== "production") globalForDb.conn = conn;
 
 export const db = drizzle(conn, { schema });
-export { eq };
+export { eq, and, or };
