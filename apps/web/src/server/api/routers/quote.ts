@@ -74,12 +74,7 @@ export const quotesRouter = createTRPCRouter({
       .from(quotes)
       .innerJoin(usersCache, eq(quotes.authorId, usersCache.userId))
       // Filter quotes to only include those belonging to the current user
-      .where(
-        and(
-          eq(quotes.userId, discordAccount.accountId),
-          eq(quotes.isFake, false),
-        ),
-      )
+      .where(eq(quotes.userId, discordAccount.accountId))
 
       // Order the results by creation date, descending
       .orderBy(desc(quotes.createdAt));
