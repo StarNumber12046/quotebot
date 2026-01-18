@@ -10,6 +10,7 @@ const config = {
     remotePatterns: [
       new URL("https://kg0jqt5xfj0zxs72.public.blob.vercel-storage.com/**"),
       new URL("https://cdn.discordapp.com/avatars/**?size=4096"),
+      new URL("https://cdn.discordapp.com/embed/avatars/**"),
     ],
   },
   typescript: {

@@ -18,7 +18,8 @@ async function executeCommand(message: Message) {
 				.where(eq(quotes.id, parseInt(quoteId)))
 				.execute();
 			if (!quote) return;
-			message.reply({ files: [quote.imageStorageUrl] });
+			const content = quote.isFake ? 'This is a fake quote.' : undefined;
+			message.reply({ content, files: [quote.imageStorageUrl] });
 			break;
 	}
 }
