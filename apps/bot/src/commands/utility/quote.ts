@@ -7,13 +7,10 @@ import {
 } from 'discord.js';
 import type { Command } from '../index.js';
 import { loadImage, createCanvas, CanvasRenderingContext2D } from 'canvas';
-import { ConvexHttpClient } from 'convex/browser';
 import { db } from '@repo/backend/dist/src/index.js';
 import { quotes, channelsCache, guildsCache, usersCache } from '@repo/backend/dist/src/schema.js';
 import { put } from '@vercel/blob';
 import { eq } from '@repo/backend/dist/src/index.js';
-
-const httpClient = new ConvexHttpClient(process.env.CONVEX_URL!);
 
 async function cacheMessage(message: Message) {
 	console.log(`[DEBUG] [${new Date().toISOString()}] 📨 Starting cacheMessage for message ID: ${message.id}`);
