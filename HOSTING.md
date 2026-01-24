@@ -45,7 +45,6 @@ These should be passed to the Docker container or defined in a `.env` file:
 |---|---|
 | `DISCORD_TOKEN` | Your Discord Bot Token |
 | `APPLICATION_ID` | Your Discord Application ID |
-| `CONVEX_URL` | URL for your Convex deployment |
 
 ### Deployment Steps
 
@@ -61,7 +60,6 @@ These should be passed to the Docker container or defined in a `.env` file:
      --name quotebot \
      -e DISCORD_TOKEN="your_token_here" \
      -e APPLICATION_ID="your_app_id" \
-     -e CONVEX_URL="your_convex_url" \
      quotebot
    ```
 
@@ -72,4 +70,4 @@ These should be passed to the Docker container or defined in a `.env` file:
 
 ### Notes
 - Ensure your bot has the necessary intents enabled in the Discord Developer Portal.
-- If the bot and web app share a database or backend logic (like Convex), ensure both are pointing to the same instance.
+- If the bot and web app share a database, ensure both are pointing to the same instance.
