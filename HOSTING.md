@@ -36,15 +36,30 @@ Configure these in your Vercel project settings:
 ### Prerequisites
 - Docker installed on your host machine
 - A Discord Bot Token
-- Convex Deployment URL (if using Convex for backend/storage)
 
 ### Environment Variables (Bot)
-These should be passed to the Docker container or defined in a `.env` file:
+These should be passed to the Docker container or defined in a `.env` file. Since the bot shares the application database with the web frontend (via the `@repo/backend` package), the `DATABASE_URL` is required.
 
 | Variable | Description |
 |---|---|
 | `DISCORD_TOKEN` | Your Discord Bot Token |
 | `APPLICATION_ID` | Your Discord Application ID |
+| `DATABASE_URL` | Connection string for the shared PostgreSQL database (e.g. `postgres://user:password@host:port/db_name`) |
+
+### Database Initialization
+Before running the bot or web app, you must push the database schema to your PostgreSQL instance. This uses the `@repo/backend` package.
+
+1. **Install Dependencies**
+   ```bash
+   pnpm install
+   ```
+
+2. **Push Schema**
+   Run the following command from the root of the repo, ensuring `DATABASE_URL` is set in your environment or `.env` file:
+   ```bash
+   DATABASE_URL="your_connection_string" pnpm db:push
+   ```
+   *Note: `db:push` is a script defined in `packages/backend/package.json` that runs `drizzle-kit push`.*
 
 ### Deployment Steps
 
@@ -60,6 +75,7 @@ These should be passed to the Docker container or defined in a `.env` file:
      --name quotebot \
      -e DISCORD_TOKEN="your_token_here" \
      -e APPLICATION_ID="your_app_id" \
+     -e DATABASE_URL="your_database_url" \
      quotebot
    ```
 
@@ -70,4 +86,4 @@ These should be passed to the Docker container or defined in a `.env` file:
 
 ### Notes
 - Ensure your bot has the necessary intents enabled in the Discord Developer Portal.
-- If the bot and web app share a database, ensure both are pointing to the same instance.
+- The bot and web app **must** share the same `DATABASE_URL` to access the same quote data.
