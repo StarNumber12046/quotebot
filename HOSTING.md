@@ -15,10 +15,11 @@ Configure these in your Vercel project settings:
 | Variable | Description |
 |---|---|
 | `DATABASE_URL` | Connection string for your database (e.g. `postgres://...`) |
+| `BETTER_AUTH_SECRET` | Secret key for Better Auth (generate one for security) |
+| `BETTER_AUTH_URL` | The full URL of your deployed application (e.g. `https://your-project.vercel.app`) |
 | `BETTER_AUTH_DB_URL` | Database URL for Better Auth (often same as `DATABASE_URL`) |
 | `DISCORD_CLIENT_ID` | Discord Application Client ID |
 | `DISCORD_CLIENT_SECRET` | Discord Application Client Secret |
-| `NEXT_PUBLIC_APP_URL` | The public URL of your deployment (e.g. `https://your-project.vercel.app`) |
 | `NEXT_PUBLIC_POSTHOG_KEY` | (Optional) Public API key for PostHog analytics |
 | `NEXT_PUBLIC_POSTHOG_HOST` | (Optional) PostHog host URL |
 
@@ -44,7 +45,8 @@ These should be passed to the Docker container or defined in a `.env` file. Sinc
 |---|---|
 | `DISCORD_TOKEN` | Your Discord Bot Token |
 | `APPLICATION_ID` | Your Discord Application ID |
-| `DATABASE_URL` | Connection string for the shared PostgreSQL database (e.g. `postgres://user:password@host:port/db_name`) |
+| `BLOB_READ_WRITE_TOKEN` | Token for Vercel Blob storage (or compatible blob storage) |
+| `DATABASE_URL` | Connection string for the shared PostgreSQL database |
 
 ### Database Initialization
 Before running the bot or web app, you must push the database schema to your PostgreSQL instance. This uses the `@repo/backend` package.
@@ -75,6 +77,7 @@ Before running the bot or web app, you must push the database schema to your Pos
      --name quotebot \
      -e DISCORD_TOKEN="your_token_here" \
      -e APPLICATION_ID="your_app_id" \
+     -e BLOB_READ_WRITE_TOKEN="your_blob_token" \
      -e DATABASE_URL="your_database_url" \
      quotebot
    ```
