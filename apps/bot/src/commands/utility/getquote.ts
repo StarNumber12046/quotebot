@@ -52,7 +52,7 @@ export default {
 			});
 			return;
 		}
-		const content = quote.isFake ? 'This is a fake quote.' : undefined;
+		const content = quote.isFake ? `This is a fake quote by <@${quote.userId}>` : undefined;
 		await interaction.followUp({ content, files: [quote.imageStorageUrl] });
 	},
 } satisfies Command;
