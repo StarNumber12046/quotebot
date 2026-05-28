@@ -4,6 +4,7 @@ import {
 	InteractionContextType,
 	Message,
 	MessageContextMenuCommandInteraction,
+	AttachmentBuilder,
 } from 'discord.js';
 import type { Command } from '../index.js';
 import { loadImage, createCanvas, CanvasRenderingContext2D } from 'canvas';
@@ -143,8 +144,11 @@ export default {
 				color: false,
 			}),
 		}).then((res) => res.json())) as { success: boolean; url: string };
-		await interaction.followUp({ files: [quote.url] });
+		
 		const image = await fetch(quote.url).then((res) => res.blob());
+		const attachment = new AttachmentBuilder(Buffer.from(await image.arrayBuffer()), { name: 'quote.png' });
+		await interaction.followUp({ files: [attachment] });
+		
 		const blobRes = await put('quote_' + targetId + '.png', image, { access: 'public', addRandomSuffix: true });
 		await db.insert(quotes).values({
 			quote: content,
