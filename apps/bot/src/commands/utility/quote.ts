@@ -134,17 +134,24 @@ export default {
 		const content = manuallyCleanContent(originalContent, interaction.targetMessage);
 		console.log(`[DEBUG] Quote content: ${content}`);
 		console.log(interaction.targetMessage);
-		const quote = (await fetch('https://api.voids.top/quote', {
+		const quoteRes = await fetch('https://api.voids.top/quote', {
 			method: 'POST',
 			body: JSON.stringify({
 				text: content,
 				display_name: author.displayName,
 				username: author.username + (author.discriminator ? '#' + author.discriminator : ''),
 				avatar: author.avatarURL({ extension: 'png', size: 4096 }) || 'https://cdn.discordapp.com/embed/avatars/0.png',
-				color: false,
+				color: 'black',
 			}),
-		}).then((res) => res.json())) as { success: boolean; url: string };
-		
+		});
+		const quote = (await quoteRes.json()) as { success: boolean; url: string };
+
+		if (!quote.success || !quote.url) {
+			console.error('[ERROR] Quote API returned an error:', JSON.stringify(quote));
+			await interaction.editReply('Failed to generate quote image. The API returned an error.');
+			return;
+		}
+
 		const image = await fetch(quote.url).then((res) => res.blob());
 		const attachment = new AttachmentBuilder(Buffer.from(await image.arrayBuffer()), { name: 'quote.png' });
 		await interaction.followUp({ files: [attachment] });
