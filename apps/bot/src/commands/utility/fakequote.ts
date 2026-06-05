@@ -41,39 +41,27 @@ export default {
 		}
 
 		// Generate Quote
-		let quote: { success: boolean; url: string };
+		let image: Blob;
 		try {
-			const res = await fetch('https://api.voids.top/quote', {
+			const res = await fetch('http://localhost:8787/generate', {
 				method: 'POST',
 				headers: { 'content-type': 'application/json' },
 				body: JSON.stringify({
 					text: text,
-					display_name: user.displayName,
-					username: user.username + (user.discriminator && user.discriminator !== '0' ? '#' + user.discriminator : ''),
-					avatar: user.avatarURL({ extension: 'png', size: 4096 }) || 'https://cdn.discordapp.com/embed/avatars/0.png',
-					color: false,
+					displayName: user.displayName,
+					username: user.username,
+					avatarUrl: user.avatarURL({ extension: 'png', size: 4096 }) || 'https://cdn.discordapp.com/embed/avatars/0.png',
 				}),
 			});
 			if (!res.ok) throw new Error(`Quote API ${res.status}`);
-			quote = (await res.json()) as { success: boolean; url: string };
+			image = await res.blob();
 		} catch {
 			await interaction.followUp({ content: 'Failed to generate quote.', ephemeral: true });
 			return;
 		}
 
-		if (!quote.success) {
-			await interaction.followUp({
-				content: `Failed to generate quote.`,
-				ephemeral: true,
-			});
-			return;
-		}
-
 		let blobRes;
 		try {
-			const imageRes = await fetch(quote.url);
-			if (!imageRes.ok) throw new Error(`Image fetch ${imageRes.status}`);
-			const image = await imageRes.blob();
 			blobRes = await put('fakequote_' + user.id + '_' + Date.now() + '.png', image, {
 				access: 'public',
 				addRandomSuffix: true,

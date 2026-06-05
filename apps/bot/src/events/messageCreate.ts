@@ -39,26 +39,23 @@ export default {
 		const { author, content: originalContent, id: targetId } = refMessage;
 		const content = manuallyCleanContent(originalContent, refMessage);
 		console.log(`[DEBUG] Quote content: ${content}`);
-		const quoteRes = await fetch('https://api.voids.top/quote', {
+		const quoteRes = await fetch('https://make-it-a-quote.starnumber12046.workers.dev', {
 			method: 'POST',
 			body: JSON.stringify({
 				text: content,
-				display_name: author.displayName,
-				username: author.username + (author.discriminator ? '#' + author.discriminator : ''),
-				avatar: author.avatarURL({ extension: 'png', size: 4096 })! || 'https://cdn.discordapp.com/embed/avatars/0.png',
-				color: 'black',
+				displayName: author.displayName,
+				username: author.username,
+				avatarUrl: author.avatarURL({ extension: 'png', size: 4096 })! || 'https://cdn.discordapp.com/embed/avatars/0.png',
 			}),
 		});
-		const quote = (await quoteRes.json()) as { success: boolean; url: string };
-
-		if (!quote.success || !quote.url) {
-			console.error('[ERROR] Quote API returned an error:', JSON.stringify(quote));
+		if (!quoteRes.ok) {
+			console.error('[ERROR] Quote API returned an error:', quoteRes.status);
 			await message.reply('Failed to generate quote image. The API returned an error.');
 			return;
 		}
 
-		await message.reply({ files: [quote.url] });
-		const image = await fetch(quote.url).then((res) => res.blob());
+		const image = Buffer.from(await quoteRes.arrayBuffer());
+		await message.reply({ files: [image] });
 		const blobRes = await put('quote_' + targetId + '.png', image, { access: 'public', addRandomSuffix: true });
 		await db.insert(quotes).values({
 			quote: content,
