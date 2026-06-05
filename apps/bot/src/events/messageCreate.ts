@@ -39,7 +39,7 @@ export default {
 		const { author, content: originalContent, id: targetId } = refMessage;
 		const content = manuallyCleanContent(originalContent, refMessage);
 		console.log(`[DEBUG] Quote content: ${content}`);
-		const quoteRes = await fetch('https://make-it-a-quote.starnumber12046.workers.dev', {
+		const quoteRes = await fetch('https://make-it-a-quote.starnumber12046.workers.dev/generate', {
 			method: 'POST',
 			body: JSON.stringify({
 				text: content,

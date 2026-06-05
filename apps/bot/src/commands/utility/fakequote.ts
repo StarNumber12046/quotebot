@@ -43,7 +43,7 @@ export default {
 		// Generate Quote
 		let image: Blob;
 		try {
-			const res = await fetch('https://make-it-a-quote.starnumber12046.workers.dev', {
+			const res = await fetch('https://make-it-a-quote.starnumber12046.workers.dev/generate', {
 				method: 'POST',
 				headers: { 'content-type': 'application/json' },
 				body: JSON.stringify({

@@ -134,7 +134,7 @@ export default {
 		const content = manuallyCleanContent(originalContent, interaction.targetMessage);
 		console.log(`[DEBUG] Quote content: ${content}`);
 		console.log(interaction.targetMessage);
-		const quoteRes = await fetch('https://make-it-a-quote.starnumber12046.workers.dev', {
+		const quoteRes = await fetch('https://make-it-a-quote.starnumber12046.workers.dev/generate', {
 			method: 'POST',
 			body: JSON.stringify({
 				text: content,
