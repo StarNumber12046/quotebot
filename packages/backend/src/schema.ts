@@ -42,6 +42,7 @@ export const quotes = createTable("quote", (d) => ({
 export const userConfigs = createTable("user_config", (d) => ({
   userId: d.text().primaryKey().notNull(),
   fakeQuoteAllowed: d.boolean().default(true).notNull(),
+  quoteUploadAllowed: d.boolean().default(false).notNull(),
   createdAt: d
     .timestamp({ withTimezone: true })
     .default(sql`CURRENT_TIMESTAMP`)

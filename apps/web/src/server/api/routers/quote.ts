@@ -133,7 +133,7 @@ export const quotesRouter = createTRPCRouter({
       .from(userConfigs)
       .where(eq(userConfigs.userId, discordAccount.accountId));
 
-    return config[0] ?? { fakeQuoteAllowed: true };
+    return config[0] ?? { fakeQuoteAllowed: true, quoteUploadAllowed: false };
   }),
 
   toggleFakeQuoteAllowed: publicProcedure.mutation(async ({ ctx }) => {
@@ -157,6 +157,30 @@ export const quotesRouter = createTRPCRouter({
         fakeQuoteAllowed: false,
       });
       return false;
+    }
+  }),
+
+  toggleQuoteUploadAllowed: publicProcedure.mutation(async ({ ctx }) => {
+    const [discordAccount] = await auth.api.listUserAccounts(ctx);
+    if (!discordAccount) throw new TRPCError({ code: "UNAUTHORIZED" });
+
+    const [existing] = await ctx.db
+      .select()
+      .from(userConfigs)
+      .where(eq(userConfigs.userId, discordAccount.accountId));
+
+    if (existing) {
+      await ctx.db
+        .update(userConfigs)
+        .set({ quoteUploadAllowed: !existing.quoteUploadAllowed })
+        .where(eq(userConfigs.userId, discordAccount.accountId));
+      return !existing.quoteUploadAllowed;
+    } else {
+      await ctx.db.insert(userConfigs).values({
+        userId: discordAccount.accountId,
+        quoteUploadAllowed: true,
+      });
+      return true;
     }
   }),
 

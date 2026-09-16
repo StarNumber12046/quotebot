@@ -1,6 +1,7 @@
 import { AccountView } from "@daveyplate/better-auth-ui";
 import { accountViewPaths } from "@daveyplate/better-auth-ui/server";
 import { FakeQuoteToggle } from "~/components/fake-quote-toggle";
+import { QuoteUploadToggle } from "~/components/quote-upload-toggle";
 
 export const dynamicParams = false;
 
@@ -18,6 +19,7 @@ export default async function AccountPage({
   return (
     <main className="container flex flex-col p-4 md:p-6">
       <AccountView path={path}></AccountView>
+      <QuoteUploadToggle />
       <FakeQuoteToggle />
     </main>
   );

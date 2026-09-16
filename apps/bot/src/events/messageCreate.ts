@@ -2,7 +2,7 @@ import { Events, Message } from 'discord.js';
 import { Event } from './index.js';
 import { cacheMessage, manuallyCleanContent } from '../util.js';
 import { db, eq } from '@repo/backend/dist/src/index.js';
-import { quotes } from '@repo/backend/dist/src/schema.js';
+import { quotes, userConfigs } from '@repo/backend/dist/src/schema.js';
 import { put } from '@vercel/blob';
 
 async function executeCommand(message: Message) {
@@ -56,6 +56,12 @@ export default {
 
 		const image = Buffer.from(await quoteRes.arrayBuffer());
 		await message.reply({ files: [image] });
+		// Check if the quoted user allows their messages to be saved as quotes.
+		// Missing config means uploads are not allowed (opt-in).
+		const [uploadConfig] = await db.select().from(userConfigs).where(eq(userConfigs.userId, author.id));
+		if (!uploadConfig?.quoteUploadAllowed) {
+			return;
+		}
 		const blobRes = await put('quote_' + targetId + '.png', image, { access: 'public', addRandomSuffix: true });
 		await db.insert(quotes).values({
 			quote: content,
